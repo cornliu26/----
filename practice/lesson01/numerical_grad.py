@@ -10,8 +10,7 @@ def numerical_grad_scalar(f, x: float, eps: float = 1e-5) -> float:
 
 
 def numerical_grad_vector(f, values, eps: float = 1e-5):
-    """TODO(core): return the numerical gradient for a list of values."""
-    raise NotImplementedError("Implement numerical_grad_vector.")
+    return [numerical_grad_scalar(f, x, eps) for x in values]
 
 
 def quick_check() -> None:
