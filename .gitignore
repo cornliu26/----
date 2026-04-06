@@ -1,0 +1,16 @@
+.DS_Store
+.swift-cache/
+.swift-tmp/
+__pycache__/
+.ipynb_checkpoints/
+.venv/
+
+# Local course workspace noise
+practice/.venv/
+practice/**/*.pyc
+
+# Downloaded or unrelated directories
+d2l-zh-book/
+d2l-zh-failed-clone.partial/
+PLUM/
+tmp_ql/
