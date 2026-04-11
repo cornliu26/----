@@ -15,19 +15,17 @@ def generate_data(num_samples: int = 100, seed: int = 0):
 
 
 def model(X: np.ndarray, w: np.ndarray, b: float) -> np.ndarray:
-    """TODO(core): implement y_hat = X @ w + b."""
-    raise NotImplementedError("Implement model.")
+    return X @ w + b
 
 
 def mse_loss(y_hat: np.ndarray, y: np.ndarray) -> float:
-    """TODO(core): implement mean squared error divided by 2."""
-    raise NotImplementedError("Implement mse_loss.")
-
+    return 0.5 * np.mean((y_hat - y) ** 2)
 
 def compute_gradients(X: np.ndarray, y_hat: np.ndarray, y: np.ndarray):
-    """TODO(core): return gradients for w and b."""
-    raise NotImplementedError("Implement compute_gradients.")
-
+    diff = y_hat - y
+    grad_w = X.T @ diff / X.shape[0]
+    grad_b = np.mean(diff)
+    return grad_w, grad_b
 
 def sgd_step(w: np.ndarray, b: float, grad_w: np.ndarray, grad_b: float, lr: float):
     return w - lr * grad_w, b - lr * grad_b
@@ -58,7 +56,7 @@ def train(num_epochs: int = 20, lr: float = 0.03):
 if __name__ == "__main__":
     print("CHECKPOINT: after implementation, loss should go down steadily.")
     try:
-        train()
+        train(2000)
     except NotImplementedError as exc:
         print("Next step:", exc)
         print("Suggested order: model -> mse_loss -> compute_gradients -> train loop.")
