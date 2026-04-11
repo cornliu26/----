@@ -19,8 +19,7 @@ def numerical_grad(f, x: np.ndarray, eps: float = 1e-5) -> np.ndarray:
 
 
 def analytical_grad_example(x: np.ndarray) -> np.ndarray:
-    """TODO(core): gradient of f(x)=sum(x^2 + 3x)."""
-    raise NotImplementedError("Implement analytical_grad_example.")
+    return 2.0 * x + 3.0
 
 
 def quick_check() -> None:
@@ -29,8 +28,11 @@ def quick_check() -> None:
     def fn(values):
         return float(np.sum(values**2 + 3.0 * values))
 
-    print("Numerical grad:", numerical_grad(fn, x.copy()))
-    print("CHECKPOINT: analytical_grad_example should match numerical grad.")
+    numerical = numerical_grad(fn, x.copy())
+    analytical = analytical_grad_example(x)
+    print("Numerical grad:", numerical)
+    print("Analytical grad:", analytical)
+    print("Match:", np.allclose(numerical, analytical))
 
 
 if __name__ == "__main__":
