@@ -33,18 +33,31 @@ def main() -> None:
     model = Sequential(Linear(2, 16), ReLU(), Linear(16, 3))
     criterion = CrossEntropyLoss()
     optimizer = SGD(model.parameters(), lr=0.1)
-    print("CHECKPOINT: after you implement mydl pieces, this script can become your first end-to-end training loop.")
+    print("CHECKPOINT: this script now exercises a full training loop.")
     print("Current model parameter count:", sum(p.data.size for p in model.parameters()))
-    try:
-        logits = model.forward(X[:4])
-        print("Current logits shape for 4 samples:", logits.shape)
-        loss = criterion.forward(logits, y[:4])
-        print("Current loss:", loss)
-        print("Current acc :", accuracy_from_logits(logits, y[:4]))
-    except NotImplementedError as exc:
-        print("Expected for now:", exc)
-        print("Suggested order: Linear.forward -> CrossEntropyLoss.forward -> Linear.backward -> optimizer improvements.")
-    optimizer.zero_grad()
+
+    rng = np.random.default_rng(0)
+    batch_indices = rng.choice(X.shape[0], size=32, replace=False)
+    X_batch = X[batch_indices]
+    y_batch = y[batch_indices]
+
+    for epoch in range(20):
+        optimizer.zero_grad()
+        logits = model.forward(X_batch)
+        loss = criterion.forward(logits, y_batch)
+        grad_logits = criterion.backward()
+        model.backward(grad_logits)
+        optimizer.step()
+
+        if epoch == 0 or epoch == 19 or epoch % 5 == 0:
+            print(
+                f"epoch={epoch:02d} "
+                f"loss={loss:.4f} "
+                f"acc={accuracy_from_logits(logits, y_batch):.4f}"
+            )
+
+    print("Final logits shape:", logits.shape)
+    print("Gradient shapes:", [param.grad.shape for param in model.parameters()])
 
 
 if __name__ == "__main__":

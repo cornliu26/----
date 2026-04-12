@@ -17,12 +17,14 @@ class Linear(Module):
         self.last_input = None
 
     def forward(self, x: np.ndarray) -> np.ndarray:
-        """TODO(core): store input and compute x @ W + b."""
-        raise NotImplementedError("Implement Linear.forward.")
+        self.last_input = x
+        return x @ self.weight.data + self.bias.data
 
     def backward(self, grad_output: np.ndarray) -> np.ndarray:
-        """TODO(core): accumulate grads and return grad wrt input."""
-        raise NotImplementedError("Implement Linear.backward.")
+        self.weight.grad += self.last_input.T @ grad_output
+        self.bias.grad += np.sum(grad_output, axis=0)
+        grad_input = grad_output @ self.weight.data.T
+        return grad_input
 
     def parameters(self) -> list[Parameter]:
         return [self.weight, self.bias]
