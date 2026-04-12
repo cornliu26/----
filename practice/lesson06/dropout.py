@@ -6,13 +6,15 @@ import numpy as np
 
 
 def dropout_forward(x: np.ndarray, drop_prob: float, training: bool, seed: int | None = None):
-    """TODO(core): implement inverted dropout.
+    if not training:
+        return x
 
-    Return:
-        out: output after dropout
-        mask: dropout mask used during training, or None during eval
-    """
-    raise NotImplementedError("Implement dropout_forward.")
+    rng = np.random.default_rng(seed)
+    mask = rng.binomial(1, 1 - drop_prob, size=x.shape)
+    mask = mask / (1 - drop_prob)
+    out = x * mask
+
+    return out
 
 
 def quick_check() -> None:

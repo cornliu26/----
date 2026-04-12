@@ -6,13 +6,14 @@ import numpy as np
 
 
 def l2_penalty(weights: list[np.ndarray]) -> float:
-    """TODO(core): return sum of squared weights / 2."""
-    raise NotImplementedError("Implement l2_penalty.")
+    return float(np.sum([np.sum(w**2) for w in weights]) / 2.0)
 
 
 def add_weight_decay(grads: list[np.ndarray], weights: list[np.ndarray], weight_decay: float):
     """TODO(core): return gradients after L2 weight decay is added."""
-    raise NotImplementedError("Implement add_weight_decay.")
+    for i, (grad, w) in enumerate(zip(grads, weights)):
+        grads[i] += weight_decay * w
+    return grads
 
 
 def compare_initializations(input_dim: int = 32, hidden_dim: int = 64, output_dim: int = 10):
