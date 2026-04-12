@@ -25,18 +25,26 @@ def linear_logits(X: np.ndarray, W: np.ndarray, b: np.ndarray) -> np.ndarray:
 
 
 def softmax(logits: np.ndarray) -> np.ndarray:
-    """TODO(core): implement a numerically stable softmax."""
-    raise NotImplementedError("Implement softmax.")
+    shifted_logits = logits - np.max(logits, axis=1, keepdims=True)
+    exp_logits = np.exp(shifted_logits)
+    probs = exp_logits / np.sum(exp_logits, axis=1, keepdims=True)
+    return probs
 
 
 def cross_entropy(probs: np.ndarray, y_true: np.ndarray) -> float:
-    """TODO(core): implement average cross-entropy loss."""
-    raise NotImplementedError("Implement cross_entropy.")
+    eps = 1e-12
+    n = probs.shape[0]
+    correct_class_probs = probs[np.arange(n), y_true]
+    return float(-np.mean(np.log(correct_class_probs + eps)))
 
 
 def gradients(X: np.ndarray, probs: np.ndarray, y_true: np.ndarray):
-    """TODO(core): return gradients for W and b."""
-    raise NotImplementedError("Implement gradients.")
+    n = X.shape[0]
+    grand_logits = probs.copy()
+    grand_logits[np.arange(n), y_true] -= 1.0
+    grad_W = X.T @ grand_logits / n
+    grad_b = np.mean(grand_logits, axis=0)
+    return grad_W, grad_b
 
 
 def train(num_epochs: int = 50, lr: float = 0.1):
@@ -66,7 +74,7 @@ def train(num_epochs: int = 50, lr: float = 0.1):
 if __name__ == "__main__":
     print("CHECKPOINT: after implementation, acc should rise well above random guess.")
     try:
-        train()
+        train(5000)
     except NotImplementedError as exc:
         print("Next step:", exc)
         print("Suggested order: softmax -> cross_entropy -> gradients -> train.")
