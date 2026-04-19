@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+import numpy as np
+
 from mydl.base import Parameter
 
 
@@ -24,15 +26,16 @@ class Momentum:
         self.params = params
         self.lr = lr
         self.beta = beta
-        self.velocity = [0.0 for _ in params]
+        self.velocity = [np.zeros_like(param.data, dtype=float) for param in params]
 
     def zero_grad(self) -> None:
         for param in self.params:
             param.zero_grad()
 
     def step(self) -> None:
-        """TODO(core): implement momentum updates."""
-        raise NotImplementedError("Implement Momentum.step.")
+        for idx, param in enumerate(self.params):
+            self.velocity[idx] = self.beta * self.velocity[idx] + param.grad
+            param.data -= self.lr * self.velocity[idx]
 
 
 class Adam:
@@ -50,13 +53,20 @@ class Adam:
         self.beta2 = beta2
         self.eps = eps
         self.t = 0
-        self.m = [0.0 for _ in params]
-        self.v = [0.0 for _ in params]
+        self.m = [np.zeros_like(param.data, dtype=float) for param in params]
+        self.v = [np.zeros_like(param.data, dtype=float) for param in params]
 
     def zero_grad(self) -> None:
         for param in self.params:
             param.zero_grad()
 
     def step(self) -> None:
-        """TODO(core): implement Adam with bias correction."""
-        raise NotImplementedError("Implement Adam.step.")
+        self.t += 1
+        for idx, param in enumerate(self.params):
+            self.m[idx] = self.beta1 * self.m[idx] + (1.0 - self.beta1) * param.grad
+            self.v[idx] = self.beta2 * self.v[idx] + (1.0 - self.beta2) * (param.grad ** 2)
+
+            m_hat = self.m[idx] / (1.0 - self.beta1 ** self.t)
+            v_hat = self.v[idx] / (1.0 - self.beta2 ** self.t)
+
+            param.data -= self.lr * m_hat / (np.sqrt(v_hat) + self.eps)
