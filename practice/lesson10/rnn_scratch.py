@@ -23,14 +23,95 @@ def one_hot(indices: np.ndarray, vocab_size: int) -> np.ndarray:
     return out
 
 
+def softmax(logits: np.ndarray) -> np.ndarray:
+    shifted = logits - np.max(logits, axis=-1, keepdims=True)
+    exp_logits = np.exp(shifted)
+    return exp_logits / np.sum(exp_logits, axis=-1, keepdims=True)
+
+
 def rnn_step(x_t: np.ndarray, h_prev: np.ndarray, params: dict[str, np.ndarray]):
-    """TODO(core): implement one RNN step and return h_t, logits_t."""
-    raise NotImplementedError("Implement rnn_step.")
+    """Run one vanilla RNN step.
+
+    x_t shape:     (batch_size, vocab_size)
+    h_prev shape:  (batch_size, hidden_size)
+    h_t shape:     (batch_size, hidden_size)
+    logits_t shape:(batch_size, vocab_size)
+    """
+    hidden_pre_activation = (
+        x_t @ params["W_xh"] + h_prev @ params["W_hh"] + params["b_h"]
+    )
+    h_t = np.tanh(hidden_pre_activation)
+    logits_t = h_t @ params["W_hq"] + params["b_q"]
+    return h_t, logits_t
 
 
-def sample(start_idx: int, length: int, params: dict[str, np.ndarray], vocab_size: int):
-    """TODO(core): generate indices from the model."""
-    raise NotImplementedError("Implement sample.")
+def forward_sequence(
+    input_indices: np.ndarray,
+    params: dict[str, np.ndarray],
+    vocab_size: int,
+    h0: np.ndarray | None = None,
+):
+    """Unroll the RNN over a token sequence.
+
+    input_indices shape: (time_steps,)
+    Returns:
+        hidden_states: (time_steps, 1, hidden_size)
+        logits_seq:    (time_steps, 1, vocab_size)
+        h_t:           final hidden state, shape (1, hidden_size)
+    """
+    input_indices = np.asarray(input_indices, dtype=int)
+    hidden_size = params["W_hh"].shape[0]
+    h_t = np.zeros((1, hidden_size), dtype=float) if h0 is None else h0.astype(float).copy()
+
+    hidden_states = []
+    logits_seq = []
+    for idx in input_indices:
+        x_t = one_hot(np.array([idx]), vocab_size)
+        h_t, logits_t = rnn_step(x_t, h_t, params)
+        hidden_states.append(h_t.copy())
+        logits_seq.append(logits_t.copy())
+    return np.stack(hidden_states), np.stack(logits_seq), h_t
+
+
+def sample(
+    start_idx: int,
+    length: int,
+    params: dict[str, np.ndarray],
+    vocab_size: int,
+    temperature: float = 1.0,
+    seed: int = 0,
+):
+    """Generate token ids by autoregressive sampling."""
+    if length <= 0:
+        return []
+    if temperature <= 0:
+        raise ValueError("temperature must be positive.")
+
+    rng = np.random.default_rng(seed)
+    hidden_size = params["W_hh"].shape[0]
+    h_t = np.zeros((1, hidden_size), dtype=float)
+    current_idx = int(start_idx)
+    generated = [current_idx]
+
+    for _ in range(length - 1):
+        x_t = one_hot(np.array([current_idx]), vocab_size)
+        h_t, logits_t = rnn_step(x_t, h_t, params)
+        probs = softmax(logits_t / temperature)[0]
+        current_idx = int(rng.choice(vocab_size, p=probs))
+        generated.append(current_idx)
+    return generated
+
+
+def sequence_cross_entropy(logits_seq: np.ndarray, targets: np.ndarray) -> float:
+    """Average next-token cross entropy over a sequence."""
+    logits_seq = np.asarray(logits_seq, dtype=float)
+    targets = np.asarray(targets, dtype=int)
+    if logits_seq.shape[0] != targets.shape[0]:
+        raise ValueError("logits_seq and targets must have the same time length.")
+
+    probs = softmax(logits_seq[:, 0, :])
+    correct = probs[np.arange(targets.shape[0]), targets]
+    return float(-np.mean(np.log(correct + 1e-12)))
 
 
 def quick_check() -> None:
@@ -39,9 +120,21 @@ def quick_check() -> None:
     params = init_rnn_params(vocab_size=vocab_size, hidden_size=hidden_size)
     x_t = one_hot(np.array([1]), vocab_size)
     h_prev = np.zeros((1, hidden_size))
+    h_t, logits_t = rnn_step(x_t, h_prev, params)
+    toy_sequence = np.array([1, 2, 3, 4], dtype=int)
+    hidden_states, logits_seq, _ = forward_sequence(toy_sequence, params, vocab_size)
+    loss = sequence_cross_entropy(logits_seq, np.array([2, 3, 4, 5]) % vocab_size)
+    sampled = sample(start_idx=1, length=6, params=params, vocab_size=vocab_size, seed=0)
     print("Parameter shapes:", {k: v.shape for k, v in params.items()})
     print("Input shape:", x_t.shape)
-    print("CHECKPOINT: rnn_step should return hidden shape (1, hidden_size) and logits shape (1, vocab_size).")
+    print("Step output shapes:", h_t.shape, logits_t.shape)
+    print("Sequence output shapes:", hidden_states.shape, logits_seq.shape)
+    print("Toy sequence loss:", f"{loss:.4f}")
+    print("Sampled token ids:", sampled)
+    print(
+        "CHECKPOINT: rnn_step updates the hidden state, forward_sequence unrolls over time, "
+        "and sample feeds each predicted token back into the next step."
+    )
 
 
 if __name__ == "__main__":
