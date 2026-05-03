@@ -1,4 +1,4 @@
-# 手写深度学习教程
+# Handwritten Deep Learning Tutorial
 
 这套教程是根据 [手写深度学习教学大纲](../手写深度学习教学大纲.md) 拆分出的 12 节课时讲义，目标是带你从 `Python + NumPy` 起步，逐步写出自己的深度学习代码，再和 D2L / PyTorch 的实现对照学习。
 
@@ -33,22 +33,21 @@
 3. 复盘 20 分钟：回答“本课检查点”。
 4. 作业 30 到 90 分钟：完成课后题和一个小扩展。
 
-## 推荐目录结构
+## 当前项目结构
 
-如果你准备把这套课长期学完，建议在当前目录下额外建立一个自己的练习区，例如：
+这套课现在已经被整理到独立项目目录 `handwritten-deep-learning/` 下，推荐结构如下：
 
 ```text
-practice/
-├── lesson01/
-├── lesson02/
-├── lesson03/
-├── mydl/
-└── final_project/
+handwritten-deep-learning/
+├── README.md
+├── tutorial/
+├── practice/
+└── 手写深度学习教学大纲.md
 ```
 
 ## 如何配合 D2L 仓库使用
 
-- 本地书籍仓库在 `../d2l-zh-book`
+- 本地书籍仓库如果仍放在仓库根目录旁边，可从这里按 `../../d2l-zh-book` 理解相对位置
 - 你可以优先看 D2L 的 `scratch` 章节
 - 如果某一节觉得抽象，就先完成教程里的操作，再去看 D2L 原文
 

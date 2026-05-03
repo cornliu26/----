@@ -1,7 +1,7 @@
 # Practice Workspace
 
 This directory is the coding companion for the tutorials in
-`/Users/bytedance/Desktop/文献阅读/tutorial`.
+`../tutorial`.
 
 The goal is simple:
 
@@ -39,7 +39,7 @@ This way you can learn with low setup friction, but still do real coding.
 ## Suggested commands
 
 ```bash
-cd /Users/bytedance/Desktop/文献阅读/practice
+cd handwritten-deep-learning/practice
 python3 -m venv .venv
 source .venv/bin/activate
 pip install -r requirements.txt
