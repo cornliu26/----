@@ -5,6 +5,7 @@
 ## Current Projects
 
 - `handwritten-deep-learning/`: 手写深度学习教程与配套代码
+- `literature-reading/`: Paper reading notes and tutorials
 
 ## Suggested Layout
 
@@ -14,6 +15,7 @@
 .
 ├── README.md
 ├── handwritten-deep-learning/
+├── literature-reading/
 ├── another-tutorial-project/
 └── ...
 ```
