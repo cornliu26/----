@@ -5,12 +5,19 @@ This directory collects paper-reading notes, tutorials, and implementation-orien
 ## Categories
 
 1. [Partial Dump](./partialdump/README.md)
+2. [Data Storage](./datastorage/README.md)
 
 ## Organization
 
 ```text
 literature-reading/
 ├── README.md
+├── datastorage/
+│   └── paper-slug/
+│       ├── README.md
+│       ├── paper.pdf
+│       ├── course-outline-zh.md
+│       └── tutorial/
 └── partialdump/
     └── paper-slug/
         ├── README.md
@@ -24,4 +31,3 @@ literature-reading/
 - Directory names are in English for easier navigation on GitHub.
 - Notes and tutorials may be written in Chinese when the target reader is internal study or discussion.
 - Each paper folder should include a short README, source paper when available, and a tutorial or outline when useful.
-
