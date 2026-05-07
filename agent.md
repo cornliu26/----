@@ -154,6 +154,35 @@ Fat Row
   -> system efficiency and model-quality evaluation
 ```
 
+## Generative Recommendation Category Guidance
+
+For `literature-reading/generative-recommendation/`, explain the recommendation-system shift, not only the model architecture.
+
+A generative recommendation writeup should usually discuss:
+
+- the baseline retrieval paradigm, such as large embedding models or ANN retrieval
+- what is being generated, such as item IDs, Semantic IDs, dense vectors, or natural language
+- item tokenization and SID-to-item mapping
+- user behavior sequence construction
+- multimodal item representation
+- continued pre-training and task-specific SFT
+- decoding strategy, such as beam search
+- invalid generated IDs, collisions, latency, candidate diversity, and fallback
+- offline metrics, online metrics, ablations, and scaling results
+
+For the current PLUM paper, the reusable teaching axis is:
+
+```text
+Large Embedding Models
+  -> Semantic ID tokenization
+  -> SID-v2 with multimodal and behavior alignment
+  -> continued pre-training for domain adaptation
+  -> generative retrieval SFT
+  -> beam search and SID-to-video lookup
+  -> production comparison, ablation, and scaling study
+  -> architecture checklist and demo plan
+```
+
 ## Editing Rules
 
 - Read the relevant README files before changing a project.
@@ -185,7 +214,7 @@ Keep commits focused. Do not bundle unrelated paper work with unrelated course e
 
 Push only when the user asks to publish to GitHub or when the current task clearly includes publishing.
 
-## Current Paper Reading Entry
+## Current Paper Reading Entries
 
 The current partial dump paper is here:
 
@@ -206,3 +235,21 @@ Important files:
 - `tutorial/lesson-05-training-time-materialization.md`
 - `tutorial/lesson-06-evaluation-and-poc.md`
 
+The current generative recommendation paper is here:
+
+```text
+literature-reading/generative-recommendation/plum-industrial-scale-generative-recommendations/
+```
+
+Important files:
+
+- `README.md`: paper entry page.
+- `paper.pdf`: source paper.
+- `course-outline-zh.md`: deep Chinese outline.
+- `tutorial/README.md`: course entry.
+- `tutorial/lesson-01-paradigm-shift.md`
+- `tutorial/lesson-02-semantic-id-tokenization.md`
+- `tutorial/lesson-03-continued-pretraining.md`
+- `tutorial/lesson-04-generative-retrieval.md`
+- `tutorial/lesson-05-evaluation-scaling.md`
+- `tutorial/lesson-06-architecture-demo-plan.md`

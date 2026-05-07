@@ -4,14 +4,21 @@ This directory collects paper-reading notes, tutorials, and implementation-orien
 
 ## Categories
 
-1. [Partial Dump](./partialdump/README.md)
-2. [Data Storage](./datastorage/README.md)
+1. [Generative Recommendation](./generative-recommendation/README.md)
+2. [Partial Dump](./partialdump/README.md)
+3. [Data Storage](./datastorage/README.md)
 
 ## Organization
 
 ```text
 literature-reading/
 ├── README.md
+├── generative-recommendation/
+│   └── paper-slug/
+│       ├── README.md
+│       ├── paper.pdf
+│       ├── course-outline-zh.md
+│       └── tutorial/
 ├── datastorage/
 │   └── paper-slug/
 │       ├── README.md
